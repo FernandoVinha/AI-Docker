@@ -12,9 +12,13 @@ apt update && apt upgrade -y
 # Instala dependências
 apt install -y curl ca-certificates gnupg lsb-release docker.io
 
-# Inicia e habilita Docker
-systemctl enable docker
-systemctl start docker
+# Inicia e habilita Docker (suporta ambientes sem systemd)
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl enable docker
+  systemctl start docker
+else
+  service docker start
+fi
 
 # Adiciona repositório do NVIDIA Container Toolkit
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
